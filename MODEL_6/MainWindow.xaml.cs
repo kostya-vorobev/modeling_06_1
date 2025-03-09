@@ -24,7 +24,7 @@ namespace MODEL_6
     /// </summary>
     public partial class MainWindow : Window
     {
-        
+
         public MainWindow()
         {
             InitializeComponent();

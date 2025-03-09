@@ -6,13 +6,13 @@ using System.Windows;
 
 namespace MODEL_6
 {
-    class Transition
+    public class Transition
     {
         public int To { get; set; }
         public double Rate { get; set; }
     }
 
-    class Markom
+    public class Markom
     {
         private MainWindow mainWindow;
         private const int N = 5; // Количество состояний
@@ -29,7 +29,12 @@ namespace MODEL_6
             InitializeGraph();
         }
 
-        private void InitializeGraph()
+        public List<List<Transition>> GetGraph()
+        {
+            return graph;
+        }
+
+        public void InitializeGraph()
         {
             // Очищаем граф перед инициализацией
             graph.Clear();
@@ -62,7 +67,7 @@ namespace MODEL_6
         }
 
         // Функция для построения матрицы переходных интенсивностей
-        private double[,] BuildTransitionMatrix()
+        public double[,] BuildTransitionMatrix()
         {
             double[,] L = new double[N, N];
             for (int i = 0; i < N; i++)
@@ -76,7 +81,7 @@ namespace MODEL_6
         }
 
         // Функция для построения матрицы коэффициентов системы dP/dt = L P
-        private double[,] BuildKolmogorovSystem(double[,] L)
+        public double[,] BuildKolmogorovSystem(double[,] L)
         {
             double[,] A = new double[N, N];
             for (int i = 0; i < N; i++)
@@ -140,7 +145,7 @@ namespace MODEL_6
                 writer.WriteLine("Time S1 S2 S3 S4 S5"); // Заголовок
                 for (int i = 0; i < solutions.Count; i++)
                 {
-                    writer.Write(i * dt);
+                    writer.Write((i * dt).ToString().Replace(',', '.'));
                     foreach (var prob in solutions[i])
                     {
                         writer.Write(" " + Math.Round(prob, 5).ToString().Replace(',', '.'));
@@ -161,7 +166,7 @@ namespace MODEL_6
             MessageBox.Show(LMatrixString + AMatrixString, "Результаты");
         }
 
-        private string MatrixToString(double[,] matrix)
+        public string MatrixToString(double[,] matrix, int N = N)
         {
             var rows = new List<string>();
             for (int i = 0; i < N; i++)
@@ -239,14 +244,14 @@ namespace MODEL_6
 
             return results;
         }
-        private void ModifyGraphForNonErgodicity()
+        public void ModifyGraphForNonErgodicity()
         {
             // Удаляем все переходы из состояния S1
             graph[0].Clear(); // S1 не имеет исходящих переходов
         }
 
         // Функция для решения системы линейных уравнений методом Гаусса
-        private bool Gauss(double[,] a, double[] x)
+        public bool Gauss(double[,] a, double[] x)
         {
             int n = a.GetLength(0);
             int m = a.GetLength(1);
@@ -306,7 +311,7 @@ namespace MODEL_6
         }
 
         // Функция для нахождения предельных вероятностей
-        private bool FindSteadyState(double[,] A, out double[] steadyState)
+        public bool FindSteadyState(double[,] A, out double[] steadyState)
         {
             steadyState = new double[N];
             double[,] augmented = new double[N, N + 1];
@@ -333,7 +338,7 @@ namespace MODEL_6
         }
 
         // Функция для проверки сильной связности графа (эргодичность)
-        private bool IsStronglyConnected(List<List<Transition>> graph)
+        public bool IsStronglyConnected(List<List<Transition>> graph)
         {
             // Используем алгоритм BFS для каждого узла
             bool bfs(int start, bool[] visited)
